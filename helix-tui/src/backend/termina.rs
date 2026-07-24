@@ -101,8 +101,10 @@ impl TerminaBackend {
         let mut original_background_color = None;
         let start = Instant::now();
 
-        // HACK: emitting OSC11 / OSC111 seems to break SGR and cause flickering in tmux.
-        capabilities.dynamic_background_color = std::env::var_os("TMUX").is_none();
+        // Downstream policy: leave the terminal default background unchanged. In Kitty, changing
+        // it to the theme background makes normal Helix cells inherit Kitty's transparency while
+        // other UI backgrounds remain opaque.
+        capabilities.dynamic_background_color = false;
 
         capabilities.kitty_keyboard = match config.kitty_keyboard_protocol {
             KittyKeyboardProtocolConfig::Disabled => KittyKeyboardSupport::None,
